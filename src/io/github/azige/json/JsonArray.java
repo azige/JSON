@@ -143,6 +143,16 @@ public class JsonArray extends JsonType implements List<JsonType>{
         return list.add(e);
     }
 
+    /**
+     * 添加一个元素到此对象。使用{@link JsonType#valueOf(Object)}进行包装。如果添加此对象自身会导致异常。
+     * @param e 要添加的元素
+     * @return {@code true}
+     * @throws IllegalArgumentException 如果{@code e}为此对象自身
+     */
+    public boolean addObj(Object e){
+        return add(JsonType.valueOf(e));
+    }
+
     @Override
     public boolean remove(Object o){
         return list.remove(o);
@@ -217,6 +227,12 @@ public class JsonArray extends JsonType implements List<JsonType>{
         return list.set(index, element);
     }
 
+    /**
+     * 在列表的指定位置插入指定元素。如果插入此对象自身会导致异常。
+     * @param index 要插入的位置
+     * @param element 要插入的元素
+     * @throws IllegalArgumentException 如果{@code element}为此对象自身
+     */
     @Override
     public void add(int index, JsonType element){
         if (element == this){
