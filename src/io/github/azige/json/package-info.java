@@ -17,7 +17,7 @@
  * 一个简单的JSON库。<br/>
  * 可以简单的将任何合适的类型包装为JSON类型，例如
  * <pre>
- * JSONObject person = new JSONObject();
+ * JsonObject person = new JsonObject();
  * person.put("name", "bob");
  * person.put("age", 12);
  * person.put("asset", new String[]{"PC", "phone", "TV"});

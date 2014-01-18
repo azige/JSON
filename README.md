@@ -17,7 +17,7 @@ This is a simple JSON Library in Java that implements the features below.
 
 Generate some JSON-Text in this way
 
-	JSONObject person = new JSONObject();
+	JsonObject person = new JsonObject();
 	person.put("name", "bob");
 	person.put("age", 12);
 	person.put("asset", new String[]{"PC", "phone", "TV"});
@@ -38,7 +38,7 @@ or in this way
 	}
 
 	Person person = new Person("bob", 20, new String[]{"PC", "phone", "TV"});
-	System.out.println(JSONType.valueOf(person));
+	System.out.println(JsonType.valueOf(person));
 
 	// The order of the pairs may not be same.
 	// output: {"name":"bob","age":20,"asset":["PC","phone","TV"]}
