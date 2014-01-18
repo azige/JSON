@@ -25,8 +25,10 @@ import java.util.ListIterator;
 /**
  * JSON数组类型。<br/>
  * 此类实现了{@link List}接口，由一个{@link ArrayList}的实例作为存储容器。
+ * 此列表<i>不允许</i>包含{@code null}元素，应使用{@link JsonType#NULL}进行包装，可以调用{@link #addObj(Object)}自动包装。
  * <b>此类的对象<i>不应当</i>包含其本身而造成递归包含</b>，其大部分方法都会检查这种行为并尽可能抛出异常以避免，
  * 但仅限于<b>直接包含</b>而不限于<b>间接包含</b>，使用者应当自行避免这种情况。
+ *
  * @author Azige
  */
 public class JsonArray extends JsonType implements List<JsonType>{
@@ -35,30 +37,28 @@ public class JsonArray extends JsonType implements List<JsonType>{
 
     /**
      * 将一个数组包装为JSON类型对象。此数组中的元素会按{@link JsonType#valueOf(Object)}的方式进行包装。
+     *
      * @param array 要包装的数组
      * @return 包含原本数组中的元素的包装为JSON类型的JSON数组对象
      */
     public static JsonArray valueOf(Object[] array){
-        if (array instanceof JsonType[]){
-            return new JsonArray(Arrays.asList((JsonType[])array));
-        }else{
-            JsonArray ja = new JsonArray();
-            for (Object element : array){
-                ja.list.add(JsonType.valueOf(element));
-            }
-            return ja;
+        JsonArray ja = new JsonArray();
+        for (Object element : array){
+            ja.list.add(JsonType.valueOf(element));
         }
+        return ja;
     }
 
     /**
      * 将一个集合包装为JSON类型对象。此集合中的元素会按{@link JsonType#valueOf(Object)}的方式进行包装。
+     *
      * @param collection 要包装的集合
      * @return 包含原本集合中的元素的包装为JSON类型的JSON数组对象
      */
     public static JsonArray valueOf(Collection<?> collection){
         JsonArray ja = new JsonArray();
         for (Object element : collection){
-            ja.add(JsonType.valueOf(element));
+            ja.list.add(JsonType.valueOf(element));
         }
         return ja;
     }
@@ -72,9 +72,14 @@ public class JsonArray extends JsonType implements List<JsonType>{
 
     /**
      * 以一个集合来构造一个对象。此集合的元素都会被添加到新对象。
+     *
      * @param collection 要复制的集合
+     * @throws IllegalArgumentException 如果要复制的元素包含null元素
      */
     public JsonArray(Collection<? extends JsonType> collection){
+        if (collection.contains(null)){
+            throw new IllegalArgumentException("Null element.");
+        }
         this.list = new ArrayList<>(collection);
     }
 
@@ -88,7 +93,7 @@ public class JsonArray extends JsonType implements List<JsonType>{
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         while (true){
-            sb.append(iter.next());
+            sb.append(JsonType.valueOf(iter.next()));
             if (iter.hasNext()){
                 sb.append(',');
             }else{
@@ -131,20 +136,25 @@ public class JsonArray extends JsonType implements List<JsonType>{
 
     /**
      * 添加一个元素到此对象。如果添加此对象自身会导致异常。
+     *
      * @param e 要添加的元素
      * @return {@code true}
      * @throws IllegalArgumentException 如果{@code e}为此对象自身
+     * @throws NullPointerException 如果{@code e}为{@code null}
      */
     @Override
     public boolean add(JsonType e){
         if (e == this){
             throw new IllegalArgumentException("Can not add self.");
+        }else if (e == null){
+            throw new NullPointerException("Null element.");
         }
         return list.add(e);
     }
 
     /**
      * 添加一个元素到此对象。使用{@link JsonType#valueOf(Object)}进行包装。如果添加此对象自身会导致异常。
+     *
      * @param e 要添加的元素
      * @return {@code true}
      * @throws IllegalArgumentException 如果{@code e}为此对象自身
@@ -165,29 +175,35 @@ public class JsonArray extends JsonType implements List<JsonType>{
 
     /**
      * 将一个集合中的元素添加到此列表末尾。如果集合中包含此对象自身会导致异常。
+     *
      * @param c 要添加的集合
      * @return 如果此列表由于调用而发生更改，则返回{@code true}
-     * @throws IllegalArgumentException 如果{@code c}包含此对象自身
+     * @throws IllegalArgumentException 如果{@code c}包含此对象自身或{@code null}
      */
     @Override
     public boolean addAll(Collection<? extends JsonType> c){
         if (c.contains(this)){
             throw new IllegalArgumentException("Can not add self.");
+        }else if (c.contains(null)){
+            throw new IllegalArgumentException("Null element.");
         }
         return list.addAll(c);
     }
 
     /**
      * 将一个集合中的元素插入到此列表指定索引处。如果集合中包含此对象自身会导致异常。
+     *
      * @param index 要插入的第一个元素的位置
      * @param c 要添加的集合
      * @return 如果此列表由于调用而发生更改，则返回{@code true}
-     * @throws IllegalArgumentException 如果{@code c}包含此对象自身
+     * @throws IllegalArgumentException 如果{@code c}包含此对象自身或{@code null}
      */
     @Override
     public boolean addAll(int index, Collection<? extends JsonType> c){
         if (c.contains(this)){
             throw new IllegalArgumentException("Can not add self.");
+        }else if (c.contains(null)){
+            throw new IllegalArgumentException("Null element.");
         }
         return list.addAll(index, c);
     }
@@ -229,6 +245,7 @@ public class JsonArray extends JsonType implements List<JsonType>{
 
     /**
      * 在列表的指定位置插入指定元素。如果插入此对象自身会导致异常。
+     *
      * @param index 要插入的位置
      * @param element 要插入的元素
      * @throws IllegalArgumentException 如果{@code element}为此对象自身
@@ -236,7 +253,9 @@ public class JsonArray extends JsonType implements List<JsonType>{
     @Override
     public void add(int index, JsonType element){
         if (element == this){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Can not add self.");
+        }else if (element == null){
+            throw new NullPointerException("Null element.");
         }
         list.add(index, element);
     }

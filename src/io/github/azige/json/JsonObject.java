@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 /**
  * JSON“对象”类型。<br/>
  * 此类实现了{@link Map}接口，由一个{@link HashMap}的实例作为存储容器。
+ * 此Map<i>不允许</i>空键与空串{@code ""}键，<i>不允许</i>空值，"null"值应使用{@link JsonType#NULL}包装。
  * <b>此类的对象<i>不应当</i>包含其本身而造成递归包含</b>，其大部分方法都会检查这种行为并尽可能抛出异常以避免，
  * 但仅限于<b>直接包含</b>而不限于<b>间接包含</b>，使用者应当自行避免这种情况。
  *
@@ -76,9 +77,18 @@ public class JsonObject extends JsonType implements Map<String, JsonType>{
 
     /**
      * 以一个Map构造一个对象，Map中的所有键值对都会被添加到新对象。
+     *
      * @param map 要复制的Map
+     * @throws IllegalArgumentException 如果要复制的Map包含不合法的键或值
      */
     public JsonObject(Map<String, ? extends JsonType> map){
+        if (map.containsKey(null)){
+            throw new IllegalArgumentException("Null key.");
+        }else if (map.containsKey("")){
+            throw new IllegalArgumentException("Null string \"\" key.");
+        }else if (map.containsValue(null)){
+            throw new IllegalArgumentException("Null value.");
+        }
         this.map = new HashMap<>(map);
     }
 
@@ -95,7 +105,7 @@ public class JsonObject extends JsonType implements Map<String, JsonType>{
             Entry<String, JsonType> entry = iter.next();
             sb.append(JsonString.valueOf(entry.getKey()).toString())
                 .append(':')
-                .append(entry.getValue());
+                .append(entry.getValue().toString());
             if (iter.hasNext()){
                 sb.append(',');
             }else{
@@ -133,25 +143,37 @@ public class JsonObject extends JsonType implements Map<String, JsonType>{
 
     /**
      * 添加或更新一个键值对。如果值是此对象本身会导致异常。
+     *
      * @param key 键
      * @param value 值
      * @return 以前与{@code key}关联的值
-     * @throws IllegalArgumentException 如果{@code value}是此对象本身
+     * @throws IllegalArgumentException
+     * 如果{@code value}是此对象本身，或{@code key}为{@code ""}
+     * @throws NullPointerException 如果{@code key}或{@code value}为{@code null}
      */
     @Override
     public JsonType put(String key, JsonType value){
         if (value == this){
             throw new IllegalArgumentException("Can not add self.");
+        }else if (value == null){
+            throw new NullPointerException("Null value.");
+        }else if (key == null){
+            throw new NullPointerException("Null key.");
+        }else if (key.equals("")){
+            throw new IllegalArgumentException("Null string \"\" key.");
         }
         return map.put(key, value);
     }
 
     /**
      * 添加或更新一个键值对。值使用{@link JsonType#valueOf(Object)}进行包装。如果值是此对象本身会导致异常。
+     *
      * @param key 键
      * @param value 值
      * @return 以前与{@code key}关联的值
-     * @throws IllegalArgumentException 如果{@code value}是此对象本身
+     * @throws IllegalArgumentException
+     * 如果{@code value}是此对象本身，或{@code key}为{@code ""}
+     * @throws NullPointerException 如果{@code key}为{@code null}
      */
     public JsonType put(String key, Object value){
         return put(key, JsonType.valueOf(value));
@@ -164,13 +186,20 @@ public class JsonObject extends JsonType implements Map<String, JsonType>{
 
     /**
      * 从指定Map中将所有键值对复制到此对象中。如果指定Map中的值集包含此对象本身会导致异常。
+     *
      * @param m 要添加键值对到此对象的Map
-     * @throws IllegalArgumentException 如果指定{@code m}的值集包含此对象本身
+     * @throws IllegalArgumentException 如果指定{@code m}的值集包含此对象本身或包含不合法的键或值
      */
     @Override
     public void putAll(Map<? extends String, ? extends JsonType> m){
         if (m.containsValue(this)){
             throw new IllegalArgumentException("Can not add self.");
+        }else if (m.containsValue(null)){
+            throw new IllegalArgumentException("Null value.");
+        }else if (m.containsKey(null)){
+            throw new IllegalArgumentException("Null key.");
+        }else if (m.containsKey("")){
+            throw new IllegalArgumentException("Null string \"\" key.");
         }
         map.putAll(m);
     }
