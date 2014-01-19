@@ -15,6 +15,8 @@
  */
 package io.github.azige.json;
 
+import static io.github.azige.json.Constant.*;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -96,23 +98,23 @@ public class JsonObject extends JsonType implements Map<String, JsonType>{
     public String toString(){
         Iterator<Entry<String, JsonType>> iter = entrySet().iterator();
         if (!iter.hasNext()){
-            return "{}";
+            return "" + OBJECT_START + OBJECT_END;
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append('{');
+        sb.append(OBJECT_START);
         while (true){
             Entry<String, JsonType> entry = iter.next();
             sb.append(JsonString.valueOf(entry.getKey()).toString())
-                .append(':')
+                .append(OBJECT_KEY_VALUE_SEPARATOR)
                 .append(entry.getValue().toString());
             if (iter.hasNext()){
-                sb.append(',');
+                sb.append(OBJECT_PAIR_SEPARATOR);
             }else{
                 break;
             }
         }
-        sb.append('}');
+        sb.append(OBJECT_END);
         return sb.toString();
     }
 

@@ -15,12 +15,9 @@
  */
 package io.github.azige.json;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import static io.github.azige.json.Constant.*;
+
+import java.util.*;
 
 /**
  * JSON数组类型。<br/>
@@ -87,20 +84,20 @@ public class JsonArray extends JsonType implements List<JsonType>{
     public String toString(){
         Iterator<JsonType> iter = iterator();
         if (!iter.hasNext()){
-            return "[]";
+            return "" + ARRAY_START + ARRAY_END;
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append('[');
+        sb.append(ARRAY_START);
         while (true){
             sb.append(JsonType.valueOf(iter.next()));
             if (iter.hasNext()){
-                sb.append(',');
+                sb.append(ARRAY_VALUE_SEPARATOR);
             }else{
                 break;
             }
         }
-        sb.append(']');
+        sb.append(ARRAY_END);
         return sb.toString();
     }
 
