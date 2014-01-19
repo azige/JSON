@@ -98,6 +98,14 @@ public class JsonString extends JsonType{
     }
 
     /**
+     * 以字符串与对应的JSON文本构造对象。
+     */
+    JsonString(String value, String jsonText){
+        this.value = value;
+        this.jsonText = jsonText;
+    }
+
+    /**
      * 获得此对象所表示的字符串。
      * @return 此对象所表示的字符串
      */
