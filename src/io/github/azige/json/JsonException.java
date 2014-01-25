@@ -17,6 +17,7 @@ package io.github.azige.json;
 
 /**
  * 用于此包在处理过程中产生的各种异常。
+ *
  * @author Azige
  */
 public class JsonException extends RuntimeException{
@@ -34,5 +35,12 @@ public class JsonException extends RuntimeException{
 
     public JsonException(Throwable cause){
         super(cause);
+    }
+}
+
+class UnexpectedCharacterException extends JsonException{
+
+    public UnexpectedCharacterException(char c){
+        super("Unexpected character '" + c + "'");
     }
 }
