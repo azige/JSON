@@ -15,7 +15,7 @@
  */
 package io.github.azige.json;
 
-import java.math.BigDecimal;
+import java.io.StringReader;
 import java.util.Objects;
 
 /**
@@ -36,7 +36,7 @@ public class JsonNumber extends JsonType{
      * @throws NumberFormatException 如果字符串的格式不正确
      */
     public static JsonNumber valueOf(String value){
-        return new JsonNumber(new BigDecimal(value), value);
+        return new JsonReader(new StringReader(value)).readNumber();
     }
 
     /**

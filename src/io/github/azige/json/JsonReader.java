@@ -20,6 +20,7 @@ import static io.github.azige.json.Constant.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.math.BigDecimal;
 
 /**
  * 用于读入JSON类型对象的字符流。<br/>
@@ -334,7 +335,7 @@ public class JsonReader{
             while (true){
                 boolean unexpected = false;
                 in.mark(1);
-                char c;
+                char c = 0;
                 try{
                     // catch EOF
                     c = readOne();
@@ -345,7 +346,7 @@ public class JsonReader{
                         case DECIMAL_NUMBER:
                         case E_NUMBER:
                             state = AFTER;
-                            continue;
+                            break;
                         default:
                             throw ex;
                     }
@@ -367,6 +368,8 @@ public class JsonReader{
                             state = AFTER_ZERO;
                         }else if ('1' <= c && c <= '9'){
                             state = INTEGER_NUMBER;
+                        }else{
+                            unexpected = true;
                         }
                         break;
                     case AFTER_ZERO:
@@ -426,12 +429,16 @@ public class JsonReader{
                             state = AFTER;
                         }
                         break;
+                    case AFTER:
+                        break;
                     default:
                         assert false;
                 }
                 if (state == AFTER){
                     in.reset();
-                    return JsonNumber.valueOf(text.toString());
+                    String str = text.toString();
+                    // JSON数值的表示形式与BigDecimal定义的是一致的
+                    return new JsonNumber(new BigDecimal(str), str);
                 }
                 if (unexpected){
                     throw new UnexpectedCharacterException(c);

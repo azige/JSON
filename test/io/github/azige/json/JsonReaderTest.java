@@ -84,6 +84,7 @@ public class JsonReaderTest{
 
     @Test(expected = JsonException.class)
     public void testException(){
+        System.out.println("testException");
         String str = "asd";
         JsonReader reader = new JsonReader(new StringReader(str));
         try{
@@ -104,6 +105,7 @@ public class JsonReaderTest{
 
     @Test(expected = JsonException.class)
     public void testReadNumberException(){
+        System.out.println("testReadNumberException");
         String str = "-124.567E-";
         JsonReader reader = new JsonReader(new StringReader(str));
         try{
