@@ -19,7 +19,7 @@
  * <pre>
  * JsonObject person = new JsonObject();
  * person.put("name", "bob");
- * person.put("age", 12);
+ * person.put("age", 20);
  * person.put("asset", new String[]{"PC", "phone", "TV"});
  * </pre>
  * 那么{@code person.toString()}将生成类似如下的JSON文本
