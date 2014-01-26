@@ -57,7 +57,7 @@ public class JsonReader{
             }else if (c == ARRAY_START){
                 return readObject();
             }else{
-                throw unexpectedEx(c);
+                throw new UnexpectedCharacterException(c);
             }
         }catch (IOException ex){
             throw new JsonException(ex);
@@ -133,7 +133,7 @@ public class JsonReader{
                         assert false;
                 }
                 if (unexpected){
-                    throw unexpectedEx(c);
+                    throw new UnexpectedCharacterException(c);
                 }
             }
         }catch (IOException ex){
@@ -198,7 +198,7 @@ public class JsonReader{
                         assert false;
                 }
                 if (unexpected){
-                    throw unexpectedEx(c);
+                    throw new UnexpectedCharacterException(c);
                 }
             }
         }catch (IOException ex){
@@ -216,6 +216,8 @@ public class JsonReader{
                 return readArray();
             }else if (c == ARRAY_START){
                 return readObject();
+            }else if (c == STRING_START){
+                return readString();
             }else if (isNumberStart(c)){
                 return readNumber();
             }else if (isBooleanStart(c)){
@@ -223,11 +225,11 @@ public class JsonReader{
             }else if (c == 'n'){
                 in.read();
                 if ((c = readOne()) != 'u' || (c = readOne()) != 'l' || (c = readOne()) != 'l'){
-                    throw unexpectedEx(c);
+                    throw new UnexpectedCharacterException(c);
                 }
                 return JsonType.NULL;
             }else{
-                throw unexpectedEx(c);
+                throw new UnexpectedCharacterException(c);
             }
         }catch (IOException ex){
             throw new JsonException(ex);
@@ -290,12 +292,12 @@ public class JsonReader{
                                 c = readOne();
                                 text.append(c);
                                 if (!isHexDigit(c)){
-                                    throw unexpectedEx(c);
+                                    throw new UnexpectedCharacterException(c);
                                 }
                             }
                             value.append(Character.toChars(Integer.parseInt(text.substring(text.length() - 4), 16))[0]);
                         }else{
-                            throw unexpectedEx(c);
+                            throw new UnexpectedCharacterException(c);
                         }
                         state = BEFORE_CHARACTER;
                         break;
@@ -303,7 +305,7 @@ public class JsonReader{
                         assert false;
                 }
                 if (unexpected){
-                    throw unexpectedEx(c);
+                    throw new UnexpectedCharacterException(c);
                 }
             }
         }catch (IOException ex){
@@ -315,8 +317,130 @@ public class JsonReader{
      * 读入一个JSON数值。
      */
     JsonNumber readNumber(){
-        // TODO: implement it.
-        throw new UnsupportedOperationException();
+        // <BEFORE>(-<AFTER_SIGN>)?(0<AFTER_ZERO>|[1-9]<INTEGER_NUMBER>\d*)(\.<AFTER_POINT>(\d<DECIMAL_NUMBER>)+)?([eE]<AFTER_E>([+-]<AFTER_E_SIGN>)?(\d<E_NUMBER>)+)<AFTER>
+        final int BEFORE = 1;
+        final int AFTER_SIGN = 2;
+        final int AFTER_ZERO = 3;
+        final int INTEGER_NUMBER = 4;
+        final int AFTER_POINT = 5;
+        final int DECIMAL_NUMBER = 6;
+        final int AFTER_E = 7;
+        final int AFTER_E_SIGN = 8;
+        final int E_NUMBER = 9;
+        final int AFTER = 10;
+        int state = BEFORE;
+        StringBuilder text = new StringBuilder();
+        try{
+            while (true){
+                boolean unexpected = false;
+                in.mark(1);
+                char c;
+                try{
+                    // catch EOF
+                    c = readOne();
+                }catch (JsonException ex){
+                    switch (state){
+                        case INTEGER_NUMBER:
+                        case AFTER_ZERO:
+                        case DECIMAL_NUMBER:
+                        case E_NUMBER:
+                            state = AFTER;
+                            continue;
+                        default:
+                            throw ex;
+                    }
+                }
+                switch (state){
+                    case BEFORE:
+                        if (c == '-'){
+                            state = AFTER_SIGN;
+                        }else if (c == '0'){
+                            state = AFTER_ZERO;
+                        }else if ('1' <= c && c <= '9'){
+                            state = INTEGER_NUMBER;
+                        }else{
+                            unexpected = true;
+                        }
+                        break;
+                    case AFTER_SIGN:
+                        if (c == '0'){
+                            state = AFTER_ZERO;
+                        }else if ('1' <= c && c <= '9'){
+                            state = INTEGER_NUMBER;
+                        }
+                        break;
+                    case AFTER_ZERO:
+                        if (c == '.'){
+                            state = AFTER_POINT;
+                        }else{
+                            state = AFTER;
+                        }
+                        break;
+                    case INTEGER_NUMBER:
+                        if ('0' <= c && c <= '9'){
+                            // don't change the state
+                        }else if (c == '.'){
+                            state = AFTER_POINT;
+                        }else if (c == 'e' || c == 'E'){
+                            state = AFTER_E;
+                        }else{
+                            state = AFTER;
+                        }
+                        break;
+                    case AFTER_POINT:
+                        if ('0' <= c && c <= '9'){
+                            state = DECIMAL_NUMBER;
+                        }else{
+                            unexpected = true;
+                        }
+                        break;
+                    case DECIMAL_NUMBER:
+                        if ('0' <= c && c <= '9'){
+                            // don't change the state
+                        }else if (c == 'e' || c == 'E'){
+                            state = AFTER_E;
+                        }else{
+                            state = AFTER;
+                        }
+                        break;
+                    case AFTER_E:
+                        if (c == '+' || c == '-'){
+                            state = AFTER_E_SIGN;
+                        }else if ('0' <= c && c <= '9'){
+                            state = E_NUMBER;
+                        }else{
+                            unexpected = true;
+                        }
+                        break;
+                    case AFTER_E_SIGN:
+                        if ('0' <= c && c <= '9'){
+                            state = E_NUMBER;
+                        }else{
+                            unexpected = true;
+                        }
+                        break;
+                    case E_NUMBER:
+                        if ('0' <= c && c <= '9'){
+                            state = E_NUMBER;
+                        }else{
+                            state = AFTER;
+                        }
+                        break;
+                    default:
+                        assert false;
+                }
+                if (state == AFTER){
+                    in.reset();
+                    return JsonNumber.valueOf(text.toString());
+                }
+                if (unexpected){
+                    throw new UnexpectedCharacterException(c);
+                }
+                text.append(c);
+            }
+        }catch (IOException ex){
+            throw new JsonException(ex);
+        }
     }
 
     /**
@@ -327,16 +451,16 @@ public class JsonReader{
             char c = readOne();
             if (c == 't'){
                 if ((c = readOne()) != 'r' || (c = readOne()) != 'u' || (c = readOne()) != 'e'){
-                    throw unexpectedEx(c);
+                    throw new UnexpectedCharacterException(c);
                 }
                 return JsonBoolean.TRUE;
             }else if (c == 'f'){
                 if ((c = readOne()) != 'a' || (c = readOne()) != 'l' || (c = readOne()) != 's' || (c = readOne()) != 'e'){
-                    throw unexpectedEx(c);
+                    throw new UnexpectedCharacterException(c);
                 }
                 return JsonBoolean.FALSE;
             }else{
-                throw unexpectedEx(c);
+                throw new UnexpectedCharacterException(c);
             }
         }catch (IOException ex){
             throw new JsonException(ex);
@@ -363,13 +487,6 @@ public class JsonReader{
         char c = readOne();
         in.reset();
         return c;
-    }
-
-    /**
-     * 提供一个“非预期字符c”的异常。
-     */
-    private static JsonException unexpectedEx(char c){
-        return new JsonException("Unexpected character '" + c + "'");
     }
 
     /**
