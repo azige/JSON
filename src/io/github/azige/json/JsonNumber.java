@@ -25,63 +25,74 @@ import java.util.Objects;
  */
 public class JsonNumber extends JsonType{
 
-    private final BigDecimal value;
+    private final Number value;
+    private final String jsonText;
 
     /**
-     * 将一个整型数值包装为JSON类型对象。
+     * 将一个字符串包装为JSON数值类型对象。
      *
-     * @param value 要包装的整型数值
-     * @return 表示此整型数值的JSON类型对象
+     * @param value 要包装的字符串
+     * @return 表示此字符串所表示的数值的JSON类型对象
+     * @throws NumberFormatException 如果字符串的格式不正确
      */
-    public static JsonNumber valueOf(long value){
-        return new JsonNumber(value);
-    }
-
-    /**
-     * 将一个浮点型数值包装为JSON类型对象。
-     *
-     * @param value 要包装的浮点型数值
-     * @return 表示此浮点型数值的JSON类型对象
-     */
-    public static JsonNumber valueOf(double value){
-        return new JsonNumber(value);
+    public static JsonNumber valueOf(String value){
+        return new JsonNumber(new BigDecimal(value), value);
     }
 
     /**
      * 将一个{@link Number}对象包装为JSON类型对象。
-     * 如果此对象的类型为{@link Float}、{@link Double}或{@link BigDecimal}，则被作为浮点型处理，否则作为整型。
      *
      * @param value 要包装的对象
      * @return 表示对应数值的JSON类型对象
      * @throws NullPointerException 如果{@code value}为空
      */
     public static JsonNumber valueOf(Number value){
-        Class<?> cls = value.getClass();
-        if (cls == Float.class || cls == Double.class || cls == BigDecimal.class){
-            return valueOf(value.doubleValue());
-        }else{
-            return valueOf(value.longValue());
-        }
+        return new JsonNumber(value);
     }
 
     /**
      * 以整型数值构造一个对象。
+     *
      * @param value 此对象表示的整型数值
      */
     public JsonNumber(long value){
-        this.value = BigDecimal.valueOf(value);
+        this(Long.valueOf(value));
     }
 
     /**
      * 以浮点型数值构造一个对象。
+     *
      * @param value 此对象表示的浮点型数值
      */
     public JsonNumber(double value){
-        this.value = BigDecimal.valueOf(value);
+        this(Double.valueOf(value));
+    }
+
+    /**
+     * 以{@code Number}对象构造一个对象。
+     *
+     * @param value 此对象表示的数值
+     * @throws NullPointerException 如果{@code value}为空
+     */
+    public JsonNumber(Number value){
+        // JSON数值的表示形式与Java中定义的数值的表示形式是一致的
+        this(value, value.toString());
+    }
+
+    /**
+     * 用指定的value与jsonText构造一个对象。
+     */
+    JsonNumber(Number value, String jsonText) throws NullPointerException{
+        if (value == null || jsonText == null){
+            throw new NullPointerException();
+        }
+        this.value = value;
+        this.jsonText = jsonText;
     }
 
     /**
      * 获得此对象的{@code int}型数值表示形式。
+     *
      * @return 此对象的{@code int}型数值
      */
     public int getIntValue(){
@@ -90,6 +101,7 @@ public class JsonNumber extends JsonType{
 
     /**
      * 获得此对象的{@code long}型数值表示形式。
+     *
      * @return 此对象的{@code long}型数值
      */
     public long getLongValue(){
@@ -98,6 +110,7 @@ public class JsonNumber extends JsonType{
 
     /**
      * 获得此对象的{@code float}型数值表示形式。
+     *
      * @return 此对象的{@code float}型数值
      */
     public float getFloatValue(){
@@ -106,10 +119,20 @@ public class JsonNumber extends JsonType{
 
     /**
      * 获得此对象的{@code double}型数值表示形式。
+     *
      * @return 此对象的{@code double}型数值
      */
     public double getDoubleValue(){
         return value.doubleValue();
+    }
+
+    /**
+     * 获得此对象表示的数值。
+     *
+     * @return 此对象表示的数值
+     */
+    public Number getValue(){
+        return value;
     }
 
     @Override
@@ -134,6 +157,6 @@ public class JsonNumber extends JsonType{
 
     @Override
     public String toString(){
-        return value.toString();
+        return jsonText;
     }
 }
