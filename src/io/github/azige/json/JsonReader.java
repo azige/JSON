@@ -112,7 +112,7 @@ public class JsonReader{
                         state = AFTER_KEY;
                         break;
                     case AFTER_KEY:
-                        unexpected = c != OBJECT_PAIR_SEPARATOR;
+                        unexpected = c != OBJECT_KEY_VALUE_SEPARATOR;
                         state = BEFORE_VALUE;
                         break;
                     case BEFORE_VALUE:
@@ -214,9 +214,9 @@ public class JsonReader{
         try{
             char c = peekOne();
             if (c == OBJECT_START){
-                return readArray();
-            }else if (c == ARRAY_START){
                 return readObject();
+            }else if (c == ARRAY_START){
+                return readArray();
             }else if (c == STRING_START){
                 return readString();
             }else if (isNumberStart(c)){
