@@ -23,7 +23,7 @@ import java.io.Writer;
  * 尽管它名字有Writer，但它并不是{@link Writer}的子类，它只关心如何输出JSON类型对象的文本。
  * @author Azige
  */
-public class JsonWriter{
+public class JsonWriter implements AutoCloseable{
 
     private final Writer out;
 
@@ -64,6 +64,7 @@ public class JsonWriter{
      * 关闭底层流。
      * @throws JsonException 如果底层流发生IO异常
      */
+    @Override
     public void close(){
         try{
             out.close();

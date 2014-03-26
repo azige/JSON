@@ -28,7 +28,7 @@ import java.math.BigDecimal;
  *
  * @author Azige
  */
-public class JsonReader{
+public class JsonReader implements AutoCloseable{
 
     private final Reader in;
 
@@ -224,7 +224,7 @@ public class JsonReader{
             }else if (isBooleanStart(c)){
                 return readBoolean();
             }else if (c == 'n'){
-                in.read();
+                readOne();
                 if ((c = readOne()) != 'u' || (c = readOne()) != 'l' || (c = readOne()) != 'l'){
                     throw new UnexpectedCharacterException(c);
                 }
@@ -472,6 +472,11 @@ public class JsonReader{
         }catch (IOException ex){
             throw new JsonException(ex);
         }
+    }
+
+    @Override
+    public void close() throws Exception{
+        in.close();
     }
 
     /**

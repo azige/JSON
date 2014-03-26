@@ -182,5 +182,6 @@ public class JsonReaderTest{
             + "  \"id\": \"ldhwcvrb\"\n"
             + "}";
         JsonObject jsonObject = new JsonReader(new StringReader(str)).readObject();
+        System.out.println(jsonObject);
     }
 }
