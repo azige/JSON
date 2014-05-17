@@ -15,15 +15,15 @@
  */
 package io.github.azige.json;
 
+import javax.json.JsonValue;
+
 /**
  * 所有JSON类型的超类。<br>
- * 此类定义使用{@link #toString()}方法来转换对象为JSON文本，
- * 此外提供了将普通的Java对象包装为JSON类型对象的方法。
+ * 此类定义使用{@link #toString()}方法来转换对象为JSON文本， 此外提供了将普通的Java对象包装为JSON类型对象的方法。
  *
  * @author Azige
  */
-public abstract class JsonType{
-
+public abstract class JsonType implements JsonValue{
 
     /**
      * 将普通的Java类型的对象包装为JSON类型的对象。{@code null}值会被转换为{@link JsonValueType#NULL}。<br>
@@ -45,24 +45,24 @@ public abstract class JsonType{
      * @see JsonArray#valueOf(Object[])
      * @see JsonObject#valueOf(Object)
      */
-    public static JsonType valueOf(Object obj){
+    public static JsonValue valueOf(Object obj){
         if (obj == null){
-            return JsonValueType.NULL;
-        }else if (obj instanceof JsonType){
-            return (JsonType)obj;
+            return NULL;
+        }else if (obj instanceof JsonValue){
+            return (JsonValue)obj;
         }else if (obj instanceof Boolean){
-            return JsonBoolean.valueOf(((Boolean)obj).booleanValue());
+            return ((Boolean)obj) ? TRUE : FALSE;
         }else if (obj instanceof Number){
-            return JsonNumber.valueOf(((Number)obj));
+            return JsonNumberImpl.valueOf(((Number)obj));
         }else if (obj instanceof String){
-            return JsonString.valueOf((String)obj);
+            return JsonStringImpl.valueOf((String)obj);
         }else if (obj.getClass().isArray()){
             if (obj.getClass().getComponentType().isPrimitive()){
                 throw new IllegalArgumentException("Primitive type array are not accepted.");
             }
-            return JsonArray.valueOf((Object[])obj);
+            return JsonArrayImpl.valueOf((Object[])obj);
         }else{
-            return JsonObject.valueOf(obj);
+            return JsonObjectImpl.valueOf(obj);
         }
     }
 

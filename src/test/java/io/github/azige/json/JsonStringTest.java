@@ -54,7 +54,7 @@ public class JsonStringTest{
     @Test
     public void testToString(){
         System.out.println("toString");
-        JsonString instance = new JsonString("asd\nasd\\asd\\asd\tasd");
+        JsonStringImpl instance = new JsonStringImpl("asd\nasd\\asd\\asd\tasd");
         String expResult = "\"asd\\nasd\\\\asd\\\\asd\\tasd\"";
         String result = instance.toString();
         System.out.println(result);

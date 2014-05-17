@@ -18,14 +18,15 @@ package io.github.azige.json;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Map;
 import java.util.Objects;
+
+import javax.json.JsonString;
 
 /**
  * JSON字符串类型。
  * @author Azige
  */
-public class JsonString extends JsonType{
+public class JsonStringImpl extends JsonType implements JsonString{
 
     private final String value;
     private final String jsonText;
@@ -36,8 +37,8 @@ public class JsonString extends JsonType{
      * @return 表示对应的字符串的JSON类型对象
      * @throws NullPointerException 如果{@code value}为空
      */
-    public static JsonString valueOf(String value){
-        return new JsonString(value);
+    public static JsonStringImpl valueOf(String value){
+        return new JsonStringImpl(value);
     }
 
     static String convertToJsonText(String string){
@@ -89,7 +90,7 @@ public class JsonString extends JsonType{
      * @param value 此对象所表示的字符串
      * @throws NullPointerException 如果{@code value}为空
      */
-    public JsonString(String value){
+    public JsonStringImpl(String value){
         if (value == null){
             throw new NullPointerException();
         }
@@ -100,7 +101,7 @@ public class JsonString extends JsonType{
     /**
      * 以字符串与对应的JSON文本构造对象。
      */
-    JsonString(String value, String jsonText){
+    JsonStringImpl(String value, String jsonText){
         this.value = value;
         this.jsonText = jsonText;
     }
@@ -126,7 +127,7 @@ public class JsonString extends JsonType{
         if (getClass() != obj.getClass()){
             return false;
         }
-        final JsonString other = (JsonString)obj;
+        final JsonStringImpl other = (JsonStringImpl)obj;
         if (!Objects.equals(this.value, other.value)){
             return false;
         }
@@ -136,5 +137,20 @@ public class JsonString extends JsonType{
     @Override
     public String toString(){
         return jsonText;
+    }
+
+    @Override
+    public ValueType getValueType(){
+        return ValueType.STRING;
+    }
+
+    @Override
+    public String getString(){
+        return value;
+    }
+
+    @Override
+    public CharSequence getChars(){
+        return value;
     }
 }

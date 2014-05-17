@@ -16,16 +16,20 @@
 package io.github.azige.json;
 
 import java.io.StringReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Objects;
+
+import javax.json.JsonNumber;
 
 /**
  * JSON数值类型。
  *
  * @author Azige
  */
-public class JsonNumber extends JsonType{
+public class JsonNumberImpl extends JsonType implements JsonNumber{
 
-    private final Number value;
+    private final BigDecimal value;
     private final String jsonText;
 
     /**
@@ -35,7 +39,7 @@ public class JsonNumber extends JsonType{
      * @return 表示此字符串所表示的数值的JSON类型对象
      * @throws NumberFormatException 如果字符串的格式不正确
      */
-    public static JsonNumber valueOf(String value){
+    public static JsonNumberImpl valueOf(String value){
         return new JsonReader(new StringReader(value)).readNumber();
     }
 
@@ -46,8 +50,8 @@ public class JsonNumber extends JsonType{
      * @return 表示对应数值的JSON类型对象
      * @throws NullPointerException 如果{@code value}为空
      */
-    public static JsonNumber valueOf(Number value){
-        return new JsonNumber(value);
+    public static JsonNumberImpl valueOf(Number value){
+        return new JsonNumberImpl(value);
     }
 
     /**
@@ -55,7 +59,7 @@ public class JsonNumber extends JsonType{
      *
      * @param value 此对象表示的整型数值
      */
-    public JsonNumber(long value){
+    public JsonNumberImpl(long value){
         this(Long.valueOf(value));
     }
 
@@ -64,7 +68,7 @@ public class JsonNumber extends JsonType{
      *
      * @param value 此对象表示的浮点型数值
      */
-    public JsonNumber(double value){
+    public JsonNumberImpl(double value){
         this(Double.valueOf(value));
     }
 
@@ -74,7 +78,7 @@ public class JsonNumber extends JsonType{
      * @param value 此对象表示的数值
      * @throws NullPointerException 如果{@code value}为空
      */
-    public JsonNumber(Number value){
+    public JsonNumberImpl(Number value){
         // JSON数值的表示形式与Java中定义的数值的表示形式是一致的
         this(value, value.toString());
     }
@@ -82,11 +86,11 @@ public class JsonNumber extends JsonType{
     /**
      * 用指定的value与jsonText构造一个对象。
      */
-    JsonNumber(Number value, String jsonText) throws NullPointerException{
+    JsonNumberImpl(Number value, String jsonText) throws NullPointerException{
         if (value == null || jsonText == null){
             throw new NullPointerException();
         }
-        this.value = value;
+        this.value = new BigDecimal(value.toString());
         this.jsonText = jsonText;
     }
 
@@ -148,7 +152,7 @@ public class JsonNumber extends JsonType{
         if (getClass() != obj.getClass()){
             return false;
         }
-        final JsonNumber other = (JsonNumber)obj;
+        final JsonNumberImpl other = (JsonNumberImpl)obj;
         if (!Objects.equals(this.value, other.value)){
             return false;
         }
@@ -158,5 +162,55 @@ public class JsonNumber extends JsonType{
     @Override
     public String toString(){
         return jsonText;
+    }
+
+    @Override
+    public ValueType getValueType(){
+        return ValueType.NUMBER;
+    }
+
+    @Override
+    public boolean isIntegral(){
+        return value.scale() <= 0;
+    }
+
+    @Override
+    public int intValue(){
+        return value.intValue();
+    }
+
+    @Override
+    public int intValueExact(){
+        return value.intValueExact();
+    }
+
+    @Override
+    public long longValue(){
+        return value.longValue();
+    }
+
+    @Override
+    public long longValueExact(){
+        return value.longValueExact();
+    }
+
+    @Override
+    public BigInteger bigIntegerValue(){
+        return value.toBigInteger();
+    }
+
+    @Override
+    public BigInteger bigIntegerValueExact(){
+        return value.toBigIntegerExact();
+    }
+
+    @Override
+    public double doubleValue(){
+        return value.doubleValue();
+    }
+
+    @Override
+    public BigDecimal bigDecimalValue(){
+        return value;
     }
 }

@@ -27,6 +27,12 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
+import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonValue;
+
 /**
  * JSON“对象”类型。<br>
  * 此类实现了{@link Map}接口，由一个{@link HashMap}的实例作为存储容器。
@@ -36,11 +42,11 @@ import java.util.logging.Logger;
  *
  * @author Azige
  */
-public class JsonObject extends JsonCollectionType implements Map<String, JsonType>{
+public class JsonObjectImpl extends JsonType implements JsonObject{
 
-    private static final Logger LOG = Logger.getLogger(JsonObject.class.getName());
+    private static final Logger LOG = Logger.getLogger(JsonObjectImpl.class.getName());
 
-    private final Map<String, JsonType> map;
+    private final Map<String, JsonValue> map;
 
     /**
      * 将一个JavaBean对象包装为JSON类型对象。JavaBean的属性会成为键，对应的包装过的JSON类型对象成为值。
@@ -49,8 +55,8 @@ public class JsonObject extends JsonCollectionType implements Map<String, JsonTy
      * @param bean 要包装的JavaBean对象
      * @return 表示对应的JavaBean对象的JSON类型对象
      */
-    public static JsonObject valueOf(Object bean){
-        JsonObject jo = new JsonObject();
+    public static JsonObjectImpl valueOf(Object bean){
+        JsonObjectImpl jo = new JsonObjectImpl();
         try{
             BeanInfo info = Introspector.getBeanInfo(bean.getClass(), Object.class);
             for (PropertyDescriptor prop : info.getPropertyDescriptors()){
@@ -73,7 +79,7 @@ public class JsonObject extends JsonCollectionType implements Map<String, JsonTy
     /**
      * 构造一个空对象。
      */
-    public JsonObject(){
+    public JsonObjectImpl(){
         this.map = new HashMap<>();
     }
 
@@ -81,22 +87,14 @@ public class JsonObject extends JsonCollectionType implements Map<String, JsonTy
      * 以一个Map构造一个对象，Map中的所有键值对都会被添加到新对象。
      *
      * @param map 要复制的Map
-     * @throws IllegalArgumentException 如果要复制的Map包含不合法的键或值
      */
-    public JsonObject(Map<String, ? extends JsonType> map){
-        if (map.containsKey(null)){
-            throw new IllegalArgumentException("Null key.");
-        }else if (map.containsKey("")){
-            throw new IllegalArgumentException("Null string \"\" key.");
-        }else if (map.containsValue(null)){
-            throw new IllegalArgumentException("Null value.");
-        }
-        this.map = new HashMap<>(map);
+    JsonObjectImpl(Map<String, ? extends JsonValue> map){
+        this.map = Collections.unmodifiableMap(new HashMap<>(map));
     }
 
     @Override
     public String toString(){
-        Iterator<Entry<String, JsonType>> iter = entrySet().iterator();
+        Iterator<Entry<String, JsonValue>> iter = entrySet().iterator();
         if (!iter.hasNext()){
             return "" + OBJECT_START + OBJECT_END;
         }
@@ -104,8 +102,8 @@ public class JsonObject extends JsonCollectionType implements Map<String, JsonTy
         StringBuilder sb = new StringBuilder();
         sb.append(OBJECT_START);
         while (true){
-            Entry<String, JsonType> entry = iter.next();
-            sb.append(JsonString.valueOf(entry.getKey()).toString())
+            Entry<String, JsonValue> entry = iter.next();
+            sb.append(JsonStringImpl.valueOf(entry.getKey()).toString())
                 .append(OBJECT_KEY_VALUE_SEPARATOR)
                 .append(entry.getValue().toString());
             if (iter.hasNext()){
@@ -139,76 +137,32 @@ public class JsonObject extends JsonCollectionType implements Map<String, JsonTy
     }
 
     @Override
-    public JsonType get(Object key){
+    public JsonValue get(Object key){
         return map.get(key);
     }
 
-    /**
-     * 添加或更新一个键值对。如果值是此对象本身会导致异常。
-     *
-     * @param key 键
-     * @param value 值
-     * @return 以前与{@code key}关联的值
-     * @throws IllegalArgumentException
-     * 如果{@code value}是此对象本身，或{@code key}为{@code ""}
-     * @throws NullPointerException 如果{@code key}或{@code value}为{@code null}
-     */
     @Override
-    public JsonType put(String key, JsonType value){
-        if (value == this){
-            throw new IllegalArgumentException("Can not add self.");
-        }else if (value == null){
-            throw new NullPointerException("Null value.");
-        }else if (key == null){
-            throw new NullPointerException("Null key.");
-        }else if (key.equals("")){
-            throw new IllegalArgumentException("Null string \"\" key.");
-        }
-        return map.put(key, value);
+    public JsonValue put(String key, JsonValue value){
+        throw new UnsupportedOperationException();
     }
 
-    /**
-     * 添加或更新一个键值对。值使用{@link JsonType#valueOf(Object)}进行包装。如果值是此对象本身会导致异常。
-     *
-     * @param key 键
-     * @param value 值
-     * @return 以前与{@code key}关联的值
-     * @throws IllegalArgumentException
-     * 如果{@code value}是此对象本身，或{@code key}为{@code ""}
-     * @throws NullPointerException 如果{@code key}为{@code null}
-     */
-    public JsonType put(String key, Object value){
-        return put(key, JsonType.valueOf(value));
+    public JsonValue put(String key, Object value){
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public JsonType remove(Object key){
-        return map.remove(key);
+    public JsonValue remove(Object key){
+        throw new UnsupportedOperationException();
     }
 
-    /**
-     * 从指定Map中将所有键值对复制到此对象中。如果指定Map中的值集包含此对象本身会导致异常。
-     *
-     * @param m 要添加键值对到此对象的Map
-     * @throws IllegalArgumentException 如果指定{@code m}的值集包含此对象本身或包含不合法的键或值
-     */
     @Override
-    public void putAll(Map<? extends String, ? extends JsonType> m){
-        if (m.containsValue(this)){
-            throw new IllegalArgumentException("Can not add self.");
-        }else if (m.containsValue(null)){
-            throw new IllegalArgumentException("Null value.");
-        }else if (m.containsKey(null)){
-            throw new IllegalArgumentException("Null key.");
-        }else if (m.containsKey("")){
-            throw new IllegalArgumentException("Null string \"\" key.");
-        }
-        map.putAll(m);
+    public void putAll(Map<? extends String, ? extends JsonValue> m){
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void clear(){
-        map.clear();
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -217,12 +171,12 @@ public class JsonObject extends JsonCollectionType implements Map<String, JsonTy
     }
 
     @Override
-    public Collection<JsonType> values(){
+    public Collection<JsonValue> values(){
         return map.values();
     }
 
     @Override
-    public Set<Entry<String, JsonType>> entrySet(){
+    public Set<Entry<String, JsonValue>> entrySet(){
         return map.entrySet();
     }
 
@@ -234,5 +188,92 @@ public class JsonObject extends JsonCollectionType implements Map<String, JsonTy
     @Override
     public int hashCode(){
         return map.hashCode();
+    }
+
+    @Override
+    public ValueType getValueType(){
+        return ValueType.OBJECT;
+    }
+
+    @Override
+    public JsonArray getJsonArray(String name){
+        return (JsonArray)map.get(name);
+    }
+
+    @Override
+    public JsonObject getJsonObject(String name){
+        return (JsonObject)map.get(name);
+    }
+
+    @Override
+    public JsonNumber getJsonNumber(String name){
+        return (JsonNumber)map.get(name);
+    }
+
+    @Override
+    public JsonString getJsonString(String name){
+        return (JsonString)map.get(name);
+    }
+
+    @Override
+    public String getString(String name){
+        return getJsonString(name).getString();
+    }
+
+    @Override
+    public String getString(String name, String defaultValue){
+        JsonValue value = map.get(name);
+        if (value != null && value instanceof JsonString){
+            return ((JsonString)value).getString();
+        }else{
+            return defaultValue;
+        }
+    }
+
+    @Override
+    public int getInt(String name){
+        return getJsonNumber(name).intValue();
+    }
+
+    @Override
+    public int getInt(String name, int defaultValue){
+        JsonValue value = map.get(name);
+        if (value != null && value instanceof JsonNumber){
+            return ((JsonNumber)value).intValue();
+        }else{
+            return defaultValue;
+        }
+    }
+
+    @Override
+    public boolean getBoolean(String name){
+        JsonValue value = map.get(name);
+        if (value == null){
+            throw new NullPointerException();
+        }else if (value == TRUE){
+            return true;
+        }else if (value == FALSE){
+            return false;
+        }else{
+            throw new ClassCastException();
+        }
+    }
+
+    @Override
+    public boolean getBoolean(String name, boolean defaultValue){
+        try{
+            return getBoolean(name);
+        }catch(NullPointerException | ClassCastException ex){
+            return defaultValue;
+        }
+    }
+
+    @Override
+    public boolean isNull(String name){
+        JsonValue value = map.get(name);
+        if (value == null){
+            throw new NullPointerException();
+        }
+        return value == NULL;
     }
 }

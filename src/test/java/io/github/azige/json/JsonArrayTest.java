@@ -51,7 +51,7 @@ public class JsonArrayTest{
 
     @Test
     public void testSomething(){
-        JsonArray array = new JsonArray(Arrays.asList(new JsonNumber(123), new JsonString("asd"), JsonBoolean.TRUE));
+        JsonArrayImpl array = new JsonArrayImpl(Arrays.asList(new JsonNumberImpl(123), new JsonStringImpl("asd"), JsonBoolean.TRUE));
         String result = array.toString();
         System.out.println(result);
         assertEquals("[123,\"asd\",true]", result);

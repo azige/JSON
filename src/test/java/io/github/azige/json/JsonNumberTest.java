@@ -54,7 +54,7 @@ public class JsonNumberTest{
     @Test
     public void testGetIntValue(){
         System.out.println("getIntValue");
-        JsonNumber instance = new JsonNumber(12);
+        JsonNumberImpl instance = new JsonNumberImpl(12);
         int expResult = 12;
         int result = instance.getIntValue();
         assertEquals(expResult, result);
@@ -66,7 +66,7 @@ public class JsonNumberTest{
     @Test
     public void testGetLongValue(){
         System.out.println("getLongValue");
-        JsonNumber instance = new JsonNumber(12L);
+        JsonNumberImpl instance = new JsonNumberImpl(12L);
         long expResult = 12L;
         long result = instance.getLongValue();
         assertEquals(expResult, result);
@@ -78,7 +78,7 @@ public class JsonNumberTest{
     @Test
     public void testGetFloatValue(){
         System.out.println("getFloatValue");
-        JsonNumber instance = new JsonNumber(1.2F);
+        JsonNumberImpl instance = new JsonNumberImpl(1.2F);
         float expResult = 1.2F;
         float result = instance.getFloatValue();
         assertEquals(expResult, result, 0.0);
@@ -90,7 +90,7 @@ public class JsonNumberTest{
     @Test
     public void testGetDoubleValue(){
         System.out.println("getDoubleValue");
-        JsonNumber instance = new JsonNumber(1.2);
+        JsonNumberImpl instance = new JsonNumberImpl(1.2);
         double expResult = 1.2;
         double result = instance.getDoubleValue();
         assertEquals(expResult, result, 0.0);
@@ -102,7 +102,7 @@ public class JsonNumberTest{
     @Test
     public void testToString(){
         System.out.println("toString");
-        JsonNumber instance = new JsonNumber(12.0);
+        JsonNumberImpl instance = new JsonNumberImpl(12.0);
         String expResult = "12.0";
         String result = instance.toString();
         System.out.println(result);
@@ -116,7 +116,7 @@ public class JsonNumberTest{
     public void testValueOf_String(){
         System.out.println("valueOf");
         String value = "-124.567E-123";
-        JsonNumber number = JsonNumber.valueOf(value);
+        JsonNumberImpl number = JsonNumberImpl.valueOf(value);
         assertEquals(-124.567E-123, number.getDoubleValue(), 0.0);
     }
 }

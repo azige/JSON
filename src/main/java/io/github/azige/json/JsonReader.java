@@ -70,7 +70,7 @@ public class JsonReader implements AutoCloseable{
      *
      * @return 流中的下一个JSON对象
      */
-    public JsonObject readObject(){
+    public JsonObjectImpl readObject(){
         // <BEFORE> \{ <BEFORE_PAIRS> ( key <AFTER_KEY> : <BEFORE_VALUE> value <AFTER_VALUE> (, <BEFORE_KEY> key <AFTER_KEY> : <BEFORE_VALUE> value <AFTER_VALUE>)* )? \} <AFTER>
         final int BEFORE = 1;
         final int BEFORE_PAIRS = 2;
@@ -80,7 +80,7 @@ public class JsonReader implements AutoCloseable{
         final int AFTER_VALUE = 6;
         final int AFTER = 7;
         int state = BEFORE;
-        JsonObject jo = new JsonObject();
+        JsonObjectImpl jo = new JsonObjectImpl();
         String key = null;
         JsonType value = null;
         try{
@@ -147,7 +147,7 @@ public class JsonReader implements AutoCloseable{
      *
      * @return 流中的下一个JSON数组
      */
-    public JsonArray readArray(){
+    public JsonArrayImpl readArray(){
         // <BEFORE> \[ <BEFORE_VALUES> ( value <AFTER_VALUE> (, <BEFORE_VALUE> value <AFTER_VALUE>)* )? \] <AFTER>
         final int BEFORE = 1;
         final int BEFORE_VALUES = 2;
@@ -155,7 +155,7 @@ public class JsonReader implements AutoCloseable{
         final int AFTER_VALUE = 4;
         final int AFTER = 5;
         int state = BEFORE;
-        JsonArray ja = new JsonArray();
+        JsonArrayImpl ja = new JsonArrayImpl();
         JsonType value = null;
         try{
             while (true){
@@ -240,7 +240,7 @@ public class JsonReader implements AutoCloseable{
     /**
      * 读入一个JSON字符串。
      */
-    JsonString readString(){
+    JsonStringImpl readString(){
         // <BEFORE>"<BEFORE_CHARACTER>(\\<ESCAPE>(["\\/bfnrt]|u[0-9a-fA-F]{4})|[^\\"])*"<AFTER>
         final int BEFORE = 1;
         final int BEFORE_CHARACTER = 2;
@@ -252,7 +252,7 @@ public class JsonReader implements AutoCloseable{
         try{
             while (true){
                 if (state == AFTER){
-                    return new JsonString(value.toString(), text.toString());
+                    return new JsonStringImpl(value.toString(), text.toString());
                 }
                 boolean unexpected = false;
                 char c = readOne();
@@ -317,7 +317,7 @@ public class JsonReader implements AutoCloseable{
     /**
      * 读入一个JSON数值。
      */
-    JsonNumber readNumber(){
+    JsonNumberImpl readNumber(){
         // <BEFORE>(-<AFTER_SIGN>)?(0<AFTER_ZERO>|[1-9]<INTEGER_NUMBER>\d*)(\.<AFTER_POINT>(\d<DECIMAL_NUMBER>)+)?([eE]<AFTER_E>([+-]<AFTER_E_SIGN>)?(\d<E_NUMBER>)+)<AFTER>
         final int BEFORE = 1;
         final int AFTER_SIGN = 2;
@@ -438,7 +438,7 @@ public class JsonReader implements AutoCloseable{
                     in.reset();
                     String str = text.toString();
                     // JSON数值的表示形式与BigDecimal定义的是一致的
-                    return new JsonNumber(new BigDecimal(str), str);
+                    return new JsonNumberImpl(new BigDecimal(str), str);
                 }
                 if (unexpected){
                     throw new UnexpectedCharacterException(c);

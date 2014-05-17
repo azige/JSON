@@ -51,7 +51,7 @@ public class JsonArrayTestPerformance{
     public void testAddNull(){
         System.out.println("testAddNull");
         long start = System.nanoTime();
-        JsonArray array = new JsonArray();
+        JsonArrayImpl array = new JsonArrayImpl();
         for (int i = 0; i < 10_000_000; i++){
             array.addObj(null);
         }
@@ -63,7 +63,7 @@ public class JsonArrayTestPerformance{
     public void testAddJsonType_NULL(){
         System.out.println("testAddJsonType_NULL");
         long start = System.nanoTime();
-        JsonArray array = new JsonArray();
+        JsonArrayImpl array = new JsonArrayImpl();
         for (int i = 0; i < 10_000_000; i++){
             array.addObj(JsonValueType.NULL);
         }

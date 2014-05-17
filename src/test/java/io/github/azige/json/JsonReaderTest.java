@@ -77,7 +77,7 @@ public class JsonReaderTest{
     public void testReadString(){
         String str = "\"物\\t\\u54c1\"";
         JsonReader reader = new JsonReader(new StringReader(str));
-        JsonString json = reader.readString();
+        JsonStringImpl json = reader.readString();
         assertEquals("物\t品", json.getValue());
         assertEquals(str, json.toString());
     }
@@ -99,7 +99,7 @@ public class JsonReaderTest{
     public void testReadNumber(){
         String str = "-124.567E-123";
         JsonReader reader = new JsonReader(new StringReader(str));
-        JsonNumber number = reader.readNumber();
+        JsonNumberImpl number = reader.readNumber();
         assertEquals(-124.567E-123, number.getDoubleValue(), 0.0);
     }
 
@@ -120,12 +120,12 @@ public class JsonReaderTest{
     public void testReadArray(){
         String str = "[null, true, false, -124.567E-123, \"物\\t\\u54c1\"]";
         JsonReader reader = new JsonReader(new StringReader(str));
-        JsonArray array = reader.readArray();
+        JsonArrayImpl array = reader.readArray();
         assertEquals(JsonValueType.NULL, array.get(0));
         assertEquals(JsonBoolean.TRUE, array.get(1));
         assertEquals(JsonBoolean.FALSE, array.get(2));
-        assertEquals(-124.567E-123, ((JsonNumber)array.get(3)).getDoubleValue(), 0.0);
-        assertEquals("物\t品", ((JsonString)array.get(4)).getValue());
+        assertEquals(-124.567E-123, ((JsonNumberImpl)array.get(3)).getDoubleValue(), 0.0);
+        assertEquals("物\t品", ((JsonStringImpl)array.get(4)).getValue());
     }
 
     @Test
@@ -181,7 +181,7 @@ public class JsonReaderTest{
             + "  },\n"
             + "  \"id\": \"ldhwcvrb\"\n"
             + "}";
-        JsonObject jsonObject = new JsonReader(new StringReader(str)).readObject();
+        JsonObjectImpl jsonObject = new JsonReader(new StringReader(str)).readObject();
         System.out.println(jsonObject);
     }
 }

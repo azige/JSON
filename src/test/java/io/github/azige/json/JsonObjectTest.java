@@ -57,7 +57,7 @@ public class JsonObjectTest{
     @Test
     public void testSomething(){
         System.out.println("testSomething");
-        JsonObject obj = new JsonObject();
+        JsonObjectImpl obj = new JsonObjectImpl();
         obj.put("name", "bob");
         obj.put("age", 20);
         obj.put("asset", new String[]{"PC", "phone", "TV"});
@@ -68,7 +68,7 @@ public class JsonObjectTest{
     public void testWrapBean(){
         System.out.println("testWrapBean");
         Bean bean = new Bean("asd", 12);
-        JsonObject jo = JsonObject.valueOf(bean);
+        JsonObjectImpl jo = JsonObjectImpl.valueOf(bean);
         System.out.println(jo);
     }
 
@@ -77,7 +77,7 @@ public class JsonObjectTest{
         System.out.println("testWrapBean");
         Bean bean = new Bean("asd", 12);
         bean.setO(bean);
-        JsonObject jo = JsonObject.valueOf(bean);
+        JsonObjectImpl jo = JsonObjectImpl.valueOf(bean);
     }
 
     class Bean{
