@@ -16,7 +16,7 @@
 package io.github.azige.json;
 
 /**
- * 所有JSON类型的超类。<br/>
+ * 所有JSON类型的超类。<br>
  * 此类定义使用{@link #toString()}方法来转换对象为JSON文本，
  * 此外提供了将普通的Java对象包装为JSON类型对象的方法。
  *
@@ -24,19 +24,9 @@ package io.github.azige.json;
  */
 public abstract class JsonType{
 
-    /**
-     * {@code null}对象。此对象的JSON文本为{@code "null"}。
-     */
-    public final static JsonType NULL = new JsonType(){
-
-        @Override
-        public String toString(){
-            return "null";
-        }
-    };
 
     /**
-     * 将普通的Java类型的对象包装为JSON类型的对象。{@code null}值会被转换为{@link #NULL}。<br/>
+     * 将普通的Java类型的对象包装为JSON类型的对象。{@code null}值会被转换为{@link JsonValueType#NULL}。<br>
      * 各种类型的转换关系如下。
      * <ul>
      * <li>Boolean - JsonBoolean</li>
@@ -57,7 +47,7 @@ public abstract class JsonType{
      */
     public static JsonType valueOf(Object obj){
         if (obj == null){
-            return NULL;
+            return JsonValueType.NULL;
         }else if (obj instanceof JsonType){
             return (JsonType)obj;
         }else if (obj instanceof Boolean){

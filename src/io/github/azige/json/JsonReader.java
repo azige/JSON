@@ -23,7 +23,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 
 /**
- * 用于读入JSON类型对象的字符流。<br/>
+ * 用于读入JSON类型对象的字符流。<br>
  * 尽管它名字有Writer，但它并不是{@link Reader}的子类，它只关心如何将文本解析为JSON类型对象。
  *
  * @author Azige
@@ -228,7 +228,7 @@ public class JsonReader implements AutoCloseable{
                 if ((c = readOne()) != 'u' || (c = readOne()) != 'l' || (c = readOne()) != 'l'){
                     throw new UnexpectedCharacterException(c);
                 }
-                return JsonType.NULL;
+                return JsonValueType.NULL;
             }else{
                 throw new UnexpectedCharacterException(c);
             }

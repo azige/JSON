@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * 用于输出JSON类型对象的字符流。<br/>
+ * 用于输出JSON类型对象的字符流。<br>
  * 尽管它名字有Writer，但它并不是{@link Writer}的子类，它只关心如何输出JSON类型对象的文本。
  * @author Azige
  */

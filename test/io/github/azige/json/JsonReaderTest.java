@@ -70,7 +70,7 @@ public class JsonReaderTest{
         String str = "null";
         JsonReader reader = new JsonReader(new StringReader(str));
         JsonType json = reader.readAny();
-        assertEquals(JsonType.NULL, json);
+        assertEquals(JsonValueType.NULL, json);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class JsonReaderTest{
         String str = "[null, true, false, -124.567E-123, \"物\\t\\u54c1\"]";
         JsonReader reader = new JsonReader(new StringReader(str));
         JsonArray array = reader.readArray();
-        assertEquals(JsonType.NULL, array.get(0));
+        assertEquals(JsonValueType.NULL, array.get(0));
         assertEquals(JsonBoolean.TRUE, array.get(1));
         assertEquals(JsonBoolean.FALSE, array.get(2));
         assertEquals(-124.567E-123, ((JsonNumber)array.get(3)).getDoubleValue(), 0.0);

@@ -65,7 +65,7 @@ public class JsonArrayTestPerformance{
         long start = System.nanoTime();
         JsonArray array = new JsonArray();
         for (int i = 0; i < 10_000_000; i++){
-            array.addObj(JsonType.NULL);
+            array.addObj(JsonValueType.NULL);
         }
         long timeElapsed = System.nanoTime() - start;
         System.out.println("time elapsed: " + timeElapsed);

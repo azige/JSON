@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * 一个简单的JSON库。<br/>
+ * 一个简单的JSON库。<br>
  * 可以简单的将任何合适的类型包装为JSON类型，例如
  * <pre>
  * JsonObject person = new JsonObject();

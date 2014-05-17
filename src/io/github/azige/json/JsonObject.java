@@ -28,15 +28,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * JSON“对象”类型。<br/>
+ * JSON“对象”类型。<br>
  * 此类实现了{@link Map}接口，由一个{@link HashMap}的实例作为存储容器。
- * 此Map<i>不允许</i>空键与空串{@code ""}键，<i>不允许</i>空值，"null"值应使用{@link JsonType#NULL}包装。
+ * 此Map<i>不允许</i>空键与空串{@code ""}键，<i>不允许</i>空值，"null"值应使用{@link JsonValueType#NULL}包装。
  * <b>此类的对象<i>不应当</i>包含其本身而造成递归包含</b>，其大部分方法都会检查这种行为并尽可能抛出异常以避免，
  * 但仅限于<b>直接包含</b>而不限于<b>间接包含</b>，使用者应当自行避免这种情况。
  *
  * @author Azige
  */
-public class JsonObject extends JsonType implements Map<String, JsonType>{
+public class JsonObject extends JsonCollectionType implements Map<String, JsonType>{
 
     private static final Logger LOG = Logger.getLogger(JsonObject.class.getName());
 
