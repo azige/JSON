@@ -18,7 +18,7 @@ package io.github.azige.json;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.json.JsonArrayBuilder;
@@ -32,7 +32,7 @@ import javax.json.JsonValue;
  */
 public class JsonObjectBuilderImpl implements JsonObjectBuilder{
 
-    Map<String, JsonValue> map = new HashMap<>();
+    Map<String, JsonValue> map = new LinkedHashMap<>();
 
     @Override
     public JsonObjectBuilder add(String name, JsonValue value){

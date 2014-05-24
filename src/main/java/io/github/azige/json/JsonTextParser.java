@@ -35,7 +35,7 @@ import javax.json.stream.JsonParsingException;
  *
  * @author Azige
  */
-public class JsonParserImpl implements JsonParser{
+public class JsonTextParser implements JsonParser{
 
     private final BufferedReader in;
     private BufferedReader line;
@@ -51,7 +51,7 @@ public class JsonParserImpl implements JsonParser{
     private char peekedChar;
     private StringBuilder buffer;
 
-    public JsonParserImpl(Reader in){
+    public JsonTextParser(Reader in){
         if (in instanceof BufferedReader){
             this.in = (BufferedReader)in;
         }else{

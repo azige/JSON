@@ -45,7 +45,7 @@ public class JsonReaderImpl implements JsonReader{
      * @param in 要读入的流
      */
     public JsonReaderImpl(Reader in){
-        parser = new JsonParserImpl(in);
+        parser = new JsonTextParser(in);
     }
 
     @Override

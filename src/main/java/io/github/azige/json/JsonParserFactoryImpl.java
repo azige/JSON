@@ -48,7 +48,7 @@ public class JsonParserFactoryImpl implements JsonParserFactory{
 
     @Override
     public JsonParser createParser(Reader reader){
-        return new JsonParserImpl(reader);
+        return new JsonTextParser(reader);
     }
 
     @Override
@@ -63,12 +63,12 @@ public class JsonParserFactoryImpl implements JsonParserFactory{
 
     @Override
     public JsonParser createParser(JsonObject obj){
-        return createParser(new StringReader(obj.toString()));
+        return new JsonStructureParser(obj);
     }
 
     @Override
     public JsonParser createParser(JsonArray array){
-        return createParser(new StringReader(array.toString()));
+        return new JsonStructureParser(array);
     }
 
     @Override

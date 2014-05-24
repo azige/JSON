@@ -15,17 +15,8 @@
  */
 package io.github.azige.json;
 
-import static io.github.azige.json.Constant.*;
-
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.json.JsonArray;
@@ -83,7 +74,7 @@ public class JsonObjectImpl extends JsonType implements JsonObject{
      * @param map 要复制的Map
      */
     JsonObjectImpl(Map<String, ? extends JsonValue> map){
-        this.map = Collections.unmodifiableMap(new HashMap<>(map));
+        this.map = Collections.unmodifiableMap(map);
     }
 
     @Override
