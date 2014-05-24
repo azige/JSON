@@ -4,41 +4,27 @@ What's JSON? See [http://json.org](http://json.org)
 
 ## Overview
 
-This is a simple JSON Library in Java that implements the features below.
+This is a JSON processing library that implements the APIs in JSR-353.
 
-* The JSON-Type class structure.
-* Convert JSON-Type object to JSON-Text.
-* Wrap any object of fit type into JSON-Type object.
-* Wrap a JavaBean object into JSON-Object object.
-* Parse JSON-Text into JSON-Type object. (incoming)
-* Put the data from JSON-Object into JavaBean. (incoming)
+Besides implementing JSR-353, this project is also to implement JSON binding in the future.
 
 ## Examples
 
-Generate some JSON-Text in this way
+Add the jar file of this project to classpath and use the APIs from JSR-353 to process JSON.
 
-	JsonObject person = new JsonObject();
-	person.put("name", "bob");
-	person.put("age", 20);
-	person.put("asset", new String[]{"PC", "phone", "TV"});
-	System.out.println(person);
+Generate some JSON text in this way
 
-	// The order of the pairs may not be same.
-	// output: {"name":"bob","age":20,"asset":["PC","phone","TV"]}
-
-or in this way
-
-	// Person is a JavaBean
-	class Person{
-	    String name;
-	    int age;
-	    String[] asset;
-
-	    // Constructors, setters and getters.
-	}
-
-	Person person = new Person("bob", 20, new String[]{"PC", "phone", "TV"});
-	System.out.println(JsonType.valueOf(person));
+	JsonObject obj = Json.createObjectBuilder()
+	    .add("name", "bob")
+	    .add("age", 20)
+	    .add("asset",
+	        Json.createArrayBuilder()
+	        .add("PC")
+	        .add("phone")
+	        .add("TV")
+	    )
+	    .build();
+	System.out.println(obj);
 
 	// The order of the pairs may not be same.
 	// output: {"name":"bob","age":20,"asset":["PC","phone","TV"]}
