@@ -24,6 +24,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.io.StringWriter;
+import java.util.Arrays;
+
 
 /**
  *
@@ -97,4 +99,21 @@ public class JsonGeneratorImplTest{
         System.out.println(sw.toString());
     }
 
+    @Test
+    public void testWriteStructureValue(){
+        StringWriter sw = new StringWriter();
+        JsonGeneratorImpl jgi = new JsonGeneratorImpl(sw);
+        JsonArrayImpl array = new JsonArrayImpl(Arrays.asList(
+            new JsonNumberImpl(1),
+            new JsonNumberImpl(2),
+            new JsonNumberImpl(3)
+        ));
+
+        jgi
+            .writeStartObject()
+            .write("array", array)
+            .writeEnd();
+
+        assertEquals("{\"array\":[1,2,3]}", sw.toString());
+    }
 }

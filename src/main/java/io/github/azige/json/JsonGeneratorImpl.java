@@ -230,16 +230,6 @@ public class JsonGeneratorImpl implements JsonGenerator{
         checkObjectContext();
 
         try{
-            printSeparator();
-            if (prettyPrint){
-                printIntent();
-                out.append(new JsonStringImpl(name).toString())
-                    .append(OBJECT_KEY_VALUE_SEPARATOR)
-                    .append(' ');
-            }else{
-                out.append(new JsonStringImpl(name).toString())
-                    .append(OBJECT_KEY_VALUE_SEPARATOR);
-            }
             if (value instanceof JsonStructure){
                 if (value.getValueType() == ValueType.OBJECT){
                     writeStartObject(name);
@@ -255,6 +245,16 @@ public class JsonGeneratorImpl implements JsonGenerator{
                     writeEnd();
                 }
             }else{
+                printSeparator();
+                if (prettyPrint){
+                    printIntent();
+                    out.append(new JsonStringImpl(name).toString())
+                        .append(OBJECT_KEY_VALUE_SEPARATOR)
+                        .append(' ');
+                }else{
+                    out.append(new JsonStringImpl(name).toString())
+                        .append(OBJECT_KEY_VALUE_SEPARATOR);
+                }
                 out.append(value.toString());
             }
         }catch (IOException ex){
@@ -329,10 +329,6 @@ public class JsonGeneratorImpl implements JsonGenerator{
         checkArrayContext();
 
         try{
-            printSeparator();
-            if (prettyPrint){
-                printIntent();
-            }
             if (value instanceof JsonStructure){
                 if (value.getValueType() == ValueType.OBJECT){
                     writeStartObject();
@@ -348,6 +344,10 @@ public class JsonGeneratorImpl implements JsonGenerator{
                     writeEnd();
                 }
             }else{
+                printSeparator();
+                if (prettyPrint){
+                    printIntent();
+                }
                 out.append(value.toString());
             }
         }catch (IOException ex){
