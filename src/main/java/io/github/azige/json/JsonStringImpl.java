@@ -80,11 +80,6 @@ public class JsonStringImpl extends JsonType implements JsonString{
         return sb.toString();
     }
 
-    static String convertToString(String jsonText){
-        // TODO: implement it.
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * 以一个字符串构造一个对象。
      * @param value 此对象所表示的字符串

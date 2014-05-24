@@ -13,22 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.github.azige.json;
+
+import static org.junit.Assert.*;
+
+import java.io.StringReader;
+import java.util.List;
+
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import javax.json.JsonObject;
+import javax.json.JsonString;
+
+
 
 /**
  *
  * @author Azige
  */
-public class JsonArrayTestPerformance{
+public class JsonReaderImplTest{
 
-    public JsonArrayTestPerformance(){
+    public JsonReaderImplTest(){
     }
 
     @BeforeClass
@@ -48,26 +61,15 @@ public class JsonArrayTestPerformance{
     }
 
     @Test
-    public void testAddNull(){
-        System.out.println("testAddNull");
-        long start = System.nanoTime();
-        JsonArrayImpl array = new JsonArrayImpl();
-        for (int i = 0; i < 10_000_000; i++){
-            array.addObj(null);
-        }
-        long timeElapsed = System.nanoTime() - start;
-        System.out.println("time elapsed: " + timeElapsed);
+    public void testReadObject(){
+        String text = "{\"name\":\"bob\", \"age\":22, \"phones\":[\"123456\", \"234567\"]}";
+
+        JsonObject object = new JsonReaderImpl(new StringReader(text)).readObject();
+        assertEquals("bob", object.getString("name"));
+        assertEquals(22, object.getInt("age"));
+        JsonArray phoneList = object.getJsonArray("phones");
+        assertEquals("123456", phoneList.getString(0));
+        assertEquals("234567", phoneList.getString(1));
     }
 
-    @Test
-    public void testAddJsonType_NULL(){
-        System.out.println("testAddJsonType_NULL");
-        long start = System.nanoTime();
-        JsonArrayImpl array = new JsonArrayImpl();
-        for (int i = 0; i < 10_000_000; i++){
-            array.addObj(JsonValueType.NULL);
-        }
-        long timeElapsed = System.nanoTime() - start;
-        System.out.println("time elapsed: " + timeElapsed);
-    }
 }

@@ -109,14 +109,14 @@ public class JsonNumberTest{
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of valueOf method, of class JsonNumber.
-     */
-    @Test
-    public void testValueOf_String(){
-        System.out.println("valueOf");
-        String value = "-124.567E-123";
-        JsonNumberImpl number = JsonNumberImpl.valueOf(value);
-        assertEquals(-124.567E-123, number.getDoubleValue(), 0.0);
-    }
+//    /**
+//     * Test of valueOf method, of class JsonNumber.
+//     */
+//    @Test
+//    public void testValueOf_String(){
+//        System.out.println("valueOf");
+//        String value = "-124.567E-123";
+//        JsonNumberImpl number = JsonNumberImpl.valueOf(value);
+//        assertEquals(-124.567E-123, number.getDoubleValue(), 0.0);
+//    }
 }

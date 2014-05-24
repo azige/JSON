@@ -21,6 +21,8 @@ package io.github.azige.json;
  */
 final class Constant{
 
+    static final String DEFAULT_CHARSET = "UTF-8";
+    
     static final char OBJECT_START = '{';
     static final char OBJECT_KEY_VALUE_SEPARATOR = ':';
     static final char OBJECT_PAIR_SEPARATOR = ',';
@@ -30,6 +32,9 @@ final class Constant{
     static final char ARRAY_END = ']';
     static final char STRING_START = '\"';
     static final char STRING_END = '\"';
+    static final char STRING_ESCAPE = '\\';
+    static final char NUMBER_MINUS_SIGN = '-';
+    static final char NUMBER_DECIMAL_POINT = '.';
 
     private Constant(){
     }

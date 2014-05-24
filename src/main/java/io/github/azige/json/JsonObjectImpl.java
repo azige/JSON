@@ -21,6 +21,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -48,40 +49,33 @@ public class JsonObjectImpl extends JsonType implements JsonObject{
 
     private final Map<String, JsonValue> map;
 
-    /**
-     * 将一个JavaBean对象包装为JSON类型对象。JavaBean的属性会成为键，对应的包装过的JSON类型对象成为值。
-     * JavaBean对象不应当含有循环引用。
-     *
-     * @param bean 要包装的JavaBean对象
-     * @return 表示对应的JavaBean对象的JSON类型对象
-     */
-    public static JsonObjectImpl valueOf(Object bean){
-        JsonObjectImpl jo = new JsonObjectImpl();
-        try{
-            BeanInfo info = Introspector.getBeanInfo(bean.getClass(), Object.class);
-            for (PropertyDescriptor prop : info.getPropertyDescriptors()){
-                Method setter = prop.getReadMethod();
-                if (setter != null){
-                    Object value = setter.invoke(bean);
-                    if (value == bean){
-                        throw new IllegalArgumentException("The bean has circularity of reference.");
-                    }
-                    jo.map.put(prop.getName(), JsonType.valueOf(value));
-                }
-            }
-        }catch (IntrospectionException | IllegalAccessException | InvocationTargetException ex){
-            assert false;
-            LOG.log(Level.FINER, "", ex);
-        }
-        return jo;
-    }
-
-    /**
-     * 构造一个空对象。
-     */
-    public JsonObjectImpl(){
-        this.map = new HashMap<>();
-    }
+//    /**
+//     * 将一个JavaBean对象包装为JSON类型对象。JavaBean的属性会成为键，对应的包装过的JSON类型对象成为值。
+//     * JavaBean对象不应当含有循环引用。
+//     *
+//     * @param bean 要包装的JavaBean对象
+//     * @return 表示对应的JavaBean对象的JSON类型对象
+//     */
+//    public static JsonObjectImpl valueOf(Object bean){
+//        JsonObjectImpl jo = new JsonObjectImpl();
+//        try{
+//            BeanInfo info = Introspector.getBeanInfo(bean.getClass(), Object.class);
+//            for (PropertyDescriptor prop : info.getPropertyDescriptors()){
+//                Method setter = prop.getReadMethod();
+//                if (setter != null){
+//                    Object value = setter.invoke(bean);
+//                    if (value == bean){
+//                        throw new IllegalArgumentException("The bean has circularity of reference.");
+//                    }
+//                    jo.map.put(prop.getName(), JsonType.valueOf(value));
+//                }
+//            }
+//        }catch (IntrospectionException | IllegalAccessException | InvocationTargetException ex){
+//            assert false;
+//            LOG.log(Level.FINER, "", ex);
+//        }
+//        return jo;
+//    }
 
     /**
      * 以一个Map构造一个对象，Map中的所有键值对都会被添加到新对象。
@@ -94,26 +88,31 @@ public class JsonObjectImpl extends JsonType implements JsonObject{
 
     @Override
     public String toString(){
-        Iterator<Entry<String, JsonValue>> iter = entrySet().iterator();
-        if (!iter.hasNext()){
-            return "" + OBJECT_START + OBJECT_END;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(OBJECT_START);
-        while (true){
-            Entry<String, JsonValue> entry = iter.next();
-            sb.append(JsonStringImpl.valueOf(entry.getKey()).toString())
-                .append(OBJECT_KEY_VALUE_SEPARATOR)
-                .append(entry.getValue().toString());
-            if (iter.hasNext()){
-                sb.append(OBJECT_PAIR_SEPARATOR);
-            }else{
-                break;
-            }
-        }
-        sb.append(OBJECT_END);
-        return sb.toString();
+//        Iterator<Entry<String, JsonValue>> iter = entrySet().iterator();
+//        if (!iter.hasNext()){
+//            return "" + OBJECT_START + OBJECT_END;
+//        }
+//
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(OBJECT_START);
+//        while (true){
+//            Entry<String, JsonValue> entry = iter.next();
+//            sb.append(JsonStringImpl.valueOf(entry.getKey()).toString())
+//                .append(OBJECT_KEY_VALUE_SEPARATOR)
+//                .append(entry.getValue().toString());
+//            if (iter.hasNext()){
+//                sb.append(OBJECT_PAIR_SEPARATOR);
+//            }else{
+//                break;
+//            }
+//        }
+//        sb.append(OBJECT_END);
+//        return sb.toString();
+        StringWriter sw = new StringWriter();
+        JsonWriterImpl writer = new JsonWriterImpl(sw);
+        writer.writeObject(this);
+        writer.close();
+        return sw.toString();
     }
 
     @Override

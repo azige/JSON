@@ -17,12 +17,16 @@
 package io.github.azige.json;
 
 import java.util.Arrays;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
+
+import javax.json.JsonValue;
 
 /**
  *
@@ -51,7 +55,7 @@ public class JsonArrayTest{
 
     @Test
     public void testSomething(){
-        JsonArrayImpl array = new JsonArrayImpl(Arrays.asList(new JsonNumberImpl(123), new JsonStringImpl("asd"), JsonBoolean.TRUE));
+        JsonArrayImpl array = new JsonArrayImpl(Arrays.asList(new JsonNumberImpl(123), new JsonStringImpl("asd"), JsonValue.TRUE));
         String result = array.toString();
         System.out.println(result);
         assertEquals("[123,\"asd\",true]", result);

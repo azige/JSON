@@ -32,45 +32,27 @@ public class JsonNumberImpl extends JsonType implements JsonNumber{
     private final BigDecimal value;
     private final String jsonText;
 
-    /**
-     * 将一个字符串包装为JSON数值类型对象。
-     *
-     * @param value 要包装的字符串
-     * @return 表示此字符串所表示的数值的JSON类型对象
-     * @throws NumberFormatException 如果字符串的格式不正确
-     */
-    public static JsonNumberImpl valueOf(String value){
-        return new JsonReader(new StringReader(value)).readNumber();
-    }
-
-    /**
-     * 将一个{@link Number}对象包装为JSON类型对象。
-     *
-     * @param value 要包装的对象
-     * @return 表示对应数值的JSON类型对象
-     * @throws NullPointerException 如果{@code value}为空
-     */
-    public static JsonNumberImpl valueOf(Number value){
-        return new JsonNumberImpl(value);
-    }
-
-    /**
-     * 以整型数值构造一个对象。
-     *
-     * @param value 此对象表示的整型数值
-     */
-    public JsonNumberImpl(long value){
-        this(Long.valueOf(value));
-    }
-
-    /**
-     * 以浮点型数值构造一个对象。
-     *
-     * @param value 此对象表示的浮点型数值
-     */
-    public JsonNumberImpl(double value){
-        this(Double.valueOf(value));
-    }
+//    /**
+//     * 将一个字符串包装为JSON数值类型对象。
+//     *
+//     * @param value 要包装的字符串
+//     * @return 表示此字符串所表示的数值的JSON类型对象
+//     * @throws NumberFormatException 如果字符串的格式不正确
+//     */
+//    public static JsonNumberImpl valueOf(String value){
+//        return new JsonReaderImpl(new StringReader(value)).readNumber();
+//    }
+//
+//    /**
+//     * 将一个{@link Number}对象包装为JSON类型对象。
+//     *
+//     * @param value 要包装的对象
+//     * @return 表示对应数值的JSON类型对象
+//     * @throws NullPointerException 如果{@code value}为空
+//     */
+//    public static JsonNumberImpl valueOf(Number value){
+//        return new JsonNumberImpl(value);
+//    }
 
     /**
      * 以{@code Number}对象构造一个对象。
@@ -90,7 +72,11 @@ public class JsonNumberImpl extends JsonType implements JsonNumber{
         if (value == null || jsonText == null){
             throw new NullPointerException();
         }
-        this.value = new BigDecimal(value.toString());
+        if (value instanceof BigDecimal){
+            this.value = (BigDecimal)value;
+        }else{
+            this.value = new BigDecimal(value.toString());
+        }
         this.jsonText = jsonText;
     }
 

@@ -17,6 +17,7 @@ package io.github.azige.json;
 
 import static io.github.azige.json.Constant.*;
 
+import java.io.StringWriter;
 import java.util.*;
 
 import javax.json.JsonArray;
@@ -83,23 +84,28 @@ public class JsonArrayImpl extends JsonType implements JsonArray{
 
     @Override
     public String toString(){
-        Iterator<JsonValue> iter = iterator();
-        if (!iter.hasNext()){
-            return "" + ARRAY_START + ARRAY_END;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(ARRAY_START);
-        while (true){
-            sb.append(JsonType.valueOf(iter.next()));
-            if (iter.hasNext()){
-                sb.append(ARRAY_VALUE_SEPARATOR);
-            }else{
-                break;
-            }
-        }
-        sb.append(ARRAY_END);
-        return sb.toString();
+//        Iterator<JsonValue> iter = iterator();
+//        if (!iter.hasNext()){
+//            return "" + ARRAY_START + ARRAY_END;
+//        }
+//
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(ARRAY_START);
+//        while (true){
+//            sb.append(JsonType.valueOf(iter.next()));
+//            if (iter.hasNext()){
+//                sb.append(ARRAY_VALUE_SEPARATOR);
+//            }else{
+//                break;
+//            }
+//        }
+//        sb.append(ARRAY_END);
+//        return sb.toString();
+        StringWriter sw = new StringWriter();
+        JsonWriterImpl writer = new JsonWriterImpl(sw);
+        writer.writeArray(this);
+        writer.close();
+        return sw.toString();
     }
 
     @Override
