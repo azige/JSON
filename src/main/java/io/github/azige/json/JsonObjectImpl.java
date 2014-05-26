@@ -74,7 +74,7 @@ public class JsonObjectImpl extends JsonType implements JsonObject{
      * @param map 要复制的Map
      */
     JsonObjectImpl(Map<String, ? extends JsonValue> map){
-        this.map = Collections.unmodifiableMap(map);
+        this.map = Collections.unmodifiableMap(new LinkedHashMap<>(map));
     }
 
     @Override
