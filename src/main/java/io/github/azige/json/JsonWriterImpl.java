@@ -15,7 +15,6 @@
  */
 package io.github.azige.json;
 
-import static javax.management.Query.value;
 
 import java.io.Writer;
 import java.util.Map.Entry;
